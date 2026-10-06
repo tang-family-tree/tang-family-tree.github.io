@@ -1,0 +1,6 @@
+# This repo is PUBLIC. Never commit the family data.
+family-tree.json
+*.enc
+data/
+
+.DS_Store
