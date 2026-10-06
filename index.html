@@ -981,7 +981,7 @@ resize();
    POSTed once to a small Lambda, which checks it server-side (with real
    rate-limiting) and only then returns the data. Nothing is ever locally
    downloadable to attack offline the way an encrypted file would be. ---------- */
-const AUTH_URL='https://REPLACE-WITH-YOUR-FUNCTION-URL.lambda-url.us-east-1.on.aws/';
+const AUTH_URL='https://bir5h6bmi6j5walakhncx23ixa0kgajr.lambda-url.us-east-1.on.aws/';
 async function tryUnlock(password){
   const res=await fetch(AUTH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
   if(res.status===429){ const wait=res.headers.get('Retry-After'); const mins=wait?Math.ceil(wait/60):null;
