@@ -172,6 +172,40 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
 .err{grid-column:1/-1;color:var(--red);font-size:12px;min-height:1em}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;z-index:60;font-size:12px;display:none}
 
+/* homepage */
+#home{position:fixed;inset:0;z-index:100;background:var(--ground);overflow-y:auto;display:flex;flex-direction:column}
+#home[hidden]{display:none}
+.home-top{display:flex;justify-content:flex-end;padding:14px 18px}
+.langsw{display:flex;background:#fff;border:1px solid var(--rule);border-radius:999px;padding:3px}
+.langsw button{border:0;background:none;color:var(--ink-2);padding:6px 14px;border-radius:999px;font-size:13px}
+.langsw button.on{background:var(--ink);color:#fff;font-weight:600}
+.home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 20px 48px}
+.hero{text-align:center;margin-bottom:34px}
+.hero .pre-seal{display:block;width:60px;height:60px;margin:0 auto 16px;border-radius:9px;background:var(--seal);color:#fbe9e4;font:700 34px/60px var(--serif);text-align:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}
+.hero h1{font:700 40px/1.25 var(--serif);margin:0;letter-spacing:.28em;padding-left:.28em}
+.hero p{margin:10px auto 0;color:var(--ink-2);font-size:15px;max-width:460px;line-height:1.55}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;width:min(640px,100%)}
+.hcard{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:20px 20px 18px;box-shadow:0 4px 16px rgba(23,32,51,.07);transition:transform .12s,box-shadow .12s,border-color .12s}
+.hcard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(23,32,51,.13);border-color:#b9c4dc}
+.hcard .ic{font-size:26px;line-height:1;margin-bottom:6px}
+.hcard b{font:700 18px var(--serif)}
+.hcard span{color:var(--muted);font-size:13px;line-height:1.45}
+.home-page{width:min(780px,100%);align-self:center}
+.home-page .back{border:1px solid var(--rule);background:#fff;border-radius:8px;padding:7px 14px;margin:0 0 4px;color:var(--ink-2)}
+.home-page .back:hover{background:#f4f6fa}
+.home-page .pre-page{margin:10px 0 0}
+.contact-card{text-align:center}
+.contact-card p{font:17px/1.9 var(--serif);text-indent:0;text-align:center}
+.contact-card a{display:inline-block;margin-top:6px;font:600 20px var(--serif);color:var(--blue);word-break:break-all}
+.pre-sec p.lat{word-break:normal;overflow-wrap:break-word;text-align:left;text-indent:0;line-height:1.8;font-size:16px}
+.pre-sec .note{word-break:normal;font:14px/1.7 var(--sans);color:var(--muted);text-indent:0}
+#pwBack{position:fixed;inset:0;z-index:110;background:rgba(23,32,51,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+#pwBack[hidden]{display:none}
+.gate-card .ghost{background:none;color:var(--ink-2);font-weight:500;margin-top:6px}
+.gate-card .ghost:hover{background:#f1f3f8}
+.gate-ok{color:#2b6a2b;font-size:13px}
+@media (max-width:560px){ .home-grid{grid-template-columns:1fr} .hero h1{font-size:32px} .hcard{padding:16px 18px} }
+
 /* password gate */
 #gate{position:fixed;inset:0;z-index:100;background:var(--ground);display:flex;align-items:center;justify-content:center;padding:20px}
 #gate[hidden]{display:none}
@@ -187,8 +221,6 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
 .gate-err{min-height:18px;color:var(--red);font-size:12.5px;margin-top:10px}
 
 /* preamble */
-#preamble{position:absolute;inset:0;z-index:20;overflow-y:auto;background:var(--ground)}
-#preamble[hidden]{display:none}
 .pre-page{max-width:780px;margin:28px auto 60px;background:#fff;border:1px solid var(--rule);border-radius:10px;box-shadow:0 6px 24px rgba(23,32,51,.08);padding:44px 56px 52px}
 .pre-page h1{font:700 32px/1.3 var(--serif);text-align:center;margin:0 0 6px;letter-spacing:.3em}
 .pre-page .pre-seal{display:block;width:44px;height:44px;margin:0 auto 14px;border-radius:6px;background:var(--seal);color:#fbe9e4;font:700 26px/44px var(--serif);text-align:center}
@@ -197,7 +229,6 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
 .pre-sec h2{font:700 21px/1.4 var(--serif);margin:0 0 4px;padding-left:12px;border-left:3px solid var(--seal)}
 .pre-sec h3{font:400 15px/1.4 var(--serif);color:var(--muted);margin:0 0 10px;padding-left:15px}
 .pre-sec p{font:17px/2.05 var(--serif);margin:12px 0;text-align:justify;text-indent:2em;word-break:break-all}
-body.pre-open .zoom,body.pre-open .mini,body.pre-open .infobtn,body.pre-open .infopop,body.pre-open .genjump,body.pre-open #fitBtn,body.pre-open .info .lg,body.pre-open .info .hint{visibility:hidden}
 @media (max-width:700px){ .pre-page{margin:0;border-radius:0;border:0;padding:28px 20px} }
 @media (max-width:700px){
   #panel{width:100%}
@@ -225,9 +256,10 @@ body.pre-open .zoom,body.pre-open .mini,body.pre-open .infobtn,body.pre-open .in
 </head>
 <body>
 <header>
+  <button class="hbtn" id="homeBtn" title="Back to the home page">⌂ Home</button>
   <div class="brand"><div class="seal" aria-hidden="true">鄧</div><div><b>Family Tree</b><small id="treeTitle"></small></div></div>
   <div class="toggle" role="group" aria-label="View mode">
-    <button id="mDirect">📍 Direct Line</button><button id="mFull" class="on">🌳 Full Tree</button><button id="mPre">📜 Preamble 序</button>
+    <button id="mDirect">📍 Direct Line</button><button id="mFull" class="on">🌳 Full Tree</button>
   </div>
   <div class="search"><input id="search" type="search" placeholder="Search names, places, notes" aria-label="Search"></div>
   <div class="sep"></div>
@@ -253,18 +285,39 @@ body.pre-open .zoom,body.pre-open .mini,body.pre-open .infobtn,body.pre-open .in
   <div class="infopop" id="infoPop" role="note" hidden><q id="infoText"></q><small id="infoAt"></small></div>
   <div class="mini"><canvas id="minimap" width="148" height="120" aria-label="Minimap"></canvas></div>
   <aside id="panel" aria-label="Person details"></aside>
-  <section id="preamble" aria-label="Preamble" hidden></section>
-  <div id="gate">
-    <form id="gateForm" class="gate-card">
-      <span class="pre-seal" aria-hidden="true">鄧</span>
-      <h2>鄧氏族譜</h2>
-      <p>This family tree is private. Enter the password to view it.</p>
-      <input id="gatePw" type="password" autocomplete="current-password" placeholder="Password" autofocus>
-      <button type="submit" id="gateBtn">Unlock</button>
-      <div class="gate-err" id="gateErr"></div>
-    </form>
-  </div>
 </main>
+<div id="home">
+  <div class="home-top"><div class="langsw" role="group" aria-label="Language"><button type="button" data-lang="en">English</button><button type="button" data-lang="zh">中文</button></div></div>
+  <div class="home-wrap">
+    <div id="homeMain">
+      <div class="hero">
+        <span class="pre-seal" aria-hidden="true">鄧</span>
+        <h1>鄧氏族譜</h1>
+        <p data-i18n="tagline"></p>
+      </div>
+      <div class="home-grid">
+        <button type="button" class="hcard" id="goAbout"><i class="ic" aria-hidden="true">📜</i><b data-i18n="aboutT"></b><span data-i18n="aboutD"></span></button>
+        <button type="button" class="hcard" id="goBook"><i class="ic" aria-hidden="true">📖</i><b data-i18n="bookT"></b><span data-i18n="bookD"></span></button>
+        <button type="button" class="hcard" id="goTree"><i class="ic" aria-hidden="true">🌳</i><b data-i18n="treeT"></b><span data-i18n="treeD"></span></button>
+        <button type="button" class="hcard" id="goContact"><i class="ic" aria-hidden="true">✉️</i><b data-i18n="contactT"></b><span data-i18n="contactD"></span></button>
+      </div>
+    </div>
+    <div class="home-page" id="homeAbout" hidden><button type="button" class="back" data-back data-i18n="back"></button><div id="aboutBody"></div></div>
+    <div class="home-page" id="homeContact" hidden><button type="button" class="back" data-back data-i18n="back"></button>
+      <article class="pre-page contact-card"><span class="pre-seal" aria-hidden="true">鄧</span><h1 data-i18n="contactT"></h1><p data-i18n="contactP"></p><a id="mailLink" href="#"></a></article></div>
+  </div>
+</div>
+<div id="pwBack" hidden>
+  <form id="gateForm" class="gate-card" autocomplete="off">
+    <span class="pre-seal" aria-hidden="true">鄧</span>
+    <h2 id="pwTitle"></h2>
+    <p id="pwMsg"></p>
+    <input id="gatePw" type="password" autocomplete="current-password" data-i18n-ph="pwPh">
+    <button type="submit" id="gateBtn"></button>
+    <button type="button" class="ghost" id="pwCancel" data-i18n="cancel"></button>
+    <div class="gate-err" id="gateErr" role="alert"></div>
+  </form>
+</div>
 <div id="tip"></div>
 <div class="toast" id="toast"></div>
 
@@ -290,6 +343,7 @@ body.pre-open .zoom,body.pre-open .mini,body.pre-open .infobtn,body.pre-open .in
   </div>
 </div>
 
+<script src="config.js"></script>
 <script>
 (() => {
 'use strict';
@@ -301,7 +355,7 @@ const viewport=$('#viewport'), canvas=$('#lines'), ctx=canvas.getContext('2d'), 
 const mm=$('#minimap'), mctx=mm.getContext('2d'), tip=$('#tip');
 
 let data=null, idx=null, layouts=null, L=null;
-let mode='full', preOpen=false, tx=0, ty=0, scale=1, selectedId=null, matches=null, matchList=[], matchPos=-1;
+let mode='full', tx=0, ty=0, scale=1, selectedId=null, matches=null, matchList=[], matchPos=-1;
 let active=new Map(), pool=[], uActive=new Map(), uPool=[];
 let mmBase=null, mmDirty=true, mmXf=null, rafId=0, vw=0, vh=0, dpr=1, sliderDragging=false;
 
@@ -580,7 +634,7 @@ mm.addEventListener('click',e=>{ if(!mmXf) return; const r=mm.getBoundingClientR
 
 /* ---------- info + gen slider ---------- */
 function updateInfo(r0,r1){
-  $('#iMode').textContent=preOpen?'Preamble':(mode==='direct'?'Direct Line':'Full Tree');
+  $('#iMode').textContent=(mode==='direct'?'Direct Line':'Full Tree');
   $('#iCount').textContent=(mode==='direct'?idx.directLine.size+' of ':'')+data.people.length+' members';
   $('#iGens').textContent=idx.gens.length+' generations';
   $('#iZoom').textContent=Math.round(scale*100)+'%';
@@ -604,22 +658,7 @@ gr.addEventListener('input',()=>{ sliderDragging=true; const g=+gr.value; $('#ge
 gr.addEventListener('change',()=>{ sliderDragging=false; });
 
 /* ---------- mode ---------- */
-function showPreamble(on){
-  preOpen=on; $('#preamble').hidden=!on; document.body.classList.toggle('pre-open',on);
-  $('#mPre').classList.toggle('on',on); $('#mDirect').classList.toggle('on',!on&&mode==='direct'); $('#mFull').classList.toggle('on',!on&&mode==='full');
-  $('#iMode').textContent=on?'Preamble':(mode==='direct'?'Direct Line':'Full Tree');
-  if(on){ closePanel(); renderPreamble(); $('#preamble').scrollTop=0; } else schedule();
-}
-function renderPreamble(){
-  const pr=data.meta.preamble, el=$('#preamble');
-  if(!pr||!pr.sections){ el.innerHTML='<div class="pre-page"><p>No preamble in this file.</p></div>'; return; }
-  el.innerHTML='<article class="pre-page"><span class="pre-seal" aria-hidden="true">鄧</span><h1>'+esc(pr.title||'')+'</h1>'+
-    pr.sections.map(s=>'<section class="pre-sec">'+(s.heading?'<h2>'+esc(s.heading)+'</h2>':'')+(s.subheading?'<h3>'+esc(s.subheading)+'</h3>':'')+
-      (s.paragraphs||[]).map(p=>'<p>'+esc(p)+'</p>').join('')+'</section>').join('')+'</article>';
-}
-$('#mPre').onclick=()=>showPreamble(true);
 function setMode(m){
-  if(preOpen) showPreamble(false);
   if(m===mode) return; mode=m; L=layouts[m];
   $('#mDirect').classList.toggle('on',m==='direct'); $('#mFull').classList.toggle('on',m==='full');
   for(const el of active.values()) el._key=null;
@@ -632,7 +671,6 @@ $('#mFull').onclick=()=>{ setMode('full'); if(idx.root) centerOn(idx.root.id); }
 function select(id){ selectedId=id; mmDirty=true; for(const el of active.values()) el._key=null; schedule(); }
 function navigate(id){
   const p=idx.byId.get(id); if(!p) return;
-  if(preOpen) showPreamble(false);
   if(mode==='direct'&&!p.isDirectLine) setMode('full');
   select(id); openPanel(id); centerOn(id);
 }
@@ -873,7 +911,7 @@ function setData(obj){
   if(Array.isArray(obj.unions)) obj=fromLegacy(obj);
   obj.meta=obj.meta||{};
   data=obj; selectedId=null; matches=null; matchList=[]; $('#search').value=''; closePanel();
-  mode='full'; showPreamble(false);
+  mode='full'; 
   rebuild(true);
 }
 $('#loadBtn').onclick=()=>{ if(document.body.classList.contains('locked')){ toast('Click 🔓 Editing to load a file on this device.'); return; } $('#fileIn').click(); };
@@ -977,39 +1015,144 @@ applyLock(locked);
 /* ---------- boot ---------- */
 resize();
 
-/* ---------- password gate: the password never leaves this device. It's
-   POSTed once to a small Lambda, which checks it server-side (with real
-   rate-limiting) and only then returns the data. Nothing is ever locally
-   downloadable to attack offline the way an encrypted file would be. ---------- */
-const AUTH_URL='https://bir5h6bmi6j5walakhncx23ixa0kgajr.lambda-url.us-east-1.on.aws/';
-async function tryUnlock(password){
-  const res=await fetch(AUTH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password})});
-  if(res.status===429){ const wait=res.headers.get('Retry-After'); const mins=wait?Math.ceil(wait/60):null;
-    throw new Error(mins?`Too many attempts. Try again in about ${mins} minute${mins===1?'':'s'}.`:'Too many attempts. Try again later.'); }
-  if(res.status===401) throw new Error('Incorrect password.');
-  if(!res.ok) throw new Error('Server error ('+res.status+').');
+/* ---------- homepage (public) + password-protected actions ----------
+   The password never leaves this device except in one POST to the Lambda, which
+   checks it server-side with real rate-limiting. The tree data and the book
+   download link are only returned after that check. */
+const CFG=window.SITE_CONFIG||{};
+const AUTH_URL=CFG.AUTH_URL||'';
+const CONTACT_EMAIL=CFG.CONTACT_EMAIL||'';
+const PREAMBLE={"title": "鄧氏族譜", "sections": [{"heading": null, "paragraphs": ["東粵著姓，以鄧為首，稱厥先江西吉水人。有諱符者，在宋朝崇寧間登進士，授陽春令，權南雄路，居于桂甫山之錦田，歷年既久，族大以蕃，稱詩書者必歸之。今其十四世孫廷楨，以書經膺鄉薦，來京師，學有莫逆之好，以所修譜徵文為序。竊聞其自符公以來，有為稅院郡馬者，有授承直郎者，有掇科登仕以勛業著者，後先相望，皆能迪仁蹈義，而敦詩書禮樂之習，文物彬彬，視昔有加。祖宗積德于前，而哲人繼承于後，曷以臻此。於戲，有起自犁鋤，降及僮隸之，在乎人之能自立與不能自立而已。苟能自立，雖微而寖著；如不能自立，雖著而寖微。盛衰興替，亦何嘗之有？為鄧氏子孫，可不思有以卓立，沂其澤而會其源，培其德而厚其本，求無忝于厥先，則庻乎傳之永乆而耀也。", "張子曰：「子孫賢，族將大。」然則鄧氏所積之厚，而發達之遠者，其將有俟與。余與鄧君友義，不可辭，故樂序其譜傳，俾為子孫者知先世之盛，思有以卓立而嗣守于無窮焉。成化乙未年三月上澣 賜進士出，身觀都察院政 莆田年家弟愷書。"]}, {"heading": "鄧氏得姓考", "paragraphs": ["按姓氏考武丁封叔父于河北為鄧侯後因為氏鄧固司徒契之裔而帝嚳高辛氏次妃簡狄之所出也其在周見于經則春秋魯恒公七年書曰鄧侯吾離來朝左傳莊公六年書云楚文王過申伐鄧祈侯曰吾甥也高享之及楚伐申還遂伐鄧至周僖王四年癸卯復伐鄧併之而鄧遂入于楚秦始皇二十四年戊寅歲王剪虜楚王負芻郡其地而鄧遂入于秦其故墟今之南陽鄧州是矣迨至東漢有諱禹者字仲華諡元侯杖策追帝助光武定天下侯高密而鄧氏又再興焉禹之後其裔最繁有流于江右者世居吉安府吉水縣之白沙村嗣有漢黻名者仕宋官承務郎即為遷粵之鼻祖厥曾孫登崇宣進士授陽春令權南雄倅入廣樂風土之美即于寶安之岑田居延綿于今簪纓勿替族派殷蕃有譜以記之必詳志得氏之始庶水源木本知其所自興"]}, {"heading": "重修鄧氏族譜後跋", "paragraphs": ["萬物本乎天人本乎祖則尊祖敬宗收族固為人生之巨要而不可不講明斯道矣但款明是道端本乎譜焉我南陽鄧氏則何如乎閱嘗閱覽諸譜有自處唐朝者則以唐朝開基為始祖唐以上則遺忘矣有自處宋朝者則以宋朝開基為始祖宋以上則遺忘矣又有上溯本源即以 禹公為始祖者禹公以上則遺忘矣然我鄧氏宗譜大都以禹公為始祖也何其失諸前代之祖系乎夫禹公生于東漢而南陽鄧氏非自漢始也所以 禹公以上不得其源遂有妄以宗乎四岳者然四岳本是羌姓妄以宗乎微子者然微子抱器存商仍是子姓妄以宗乎軒轅者然軒轅出自軒轅之址公孫也妄以宗乎泰伯者然泰伯分封於吳而其後以吳為姓也于我鄧氏奚啻逕庭惟我國朝康熙字典註釋商王武丁封季父曼於河北洵為鄧氏之祖系矣于是詩書之暇不敢憚煩搜羅上古珍藏者簿原載曼公為始祖也歷代根源悉註分明更採訪江浙閩粵諸區俊佐儔三公之派各處所輯舊譜相與對覈叅考間有序廣宗公為禹公之長子者寔乃禹公之曾孫也至康公者乃隲公之從弟係卓公之從叔父也而有錯序為卓公之子者又艾公者生於後漢相去安帝既百六十有餘年矣而有錯序為康公之子者旦公興起輔公相去六百餘年而有竟以一代繁之者至公者羌故胡之别種也而有錯序為起輔公之子者又相公者乃儔公之子顯公之嫡堂弟也而有錯序為顯公之子者又禹公至艾公相去二百餘年而有以十五代孫係之者又有唐朝三百餘年渺無一祖可也於戲歷觀羣譜倒亂昭穆究何以悉數兹曼公封國世系再加詳究叅考修明閒或偽妄者刪之遺忘者補之失次者序之俾我鄧氏根源支派秩然而不紊焉尊祖敬宗收族之道森然而不失焉是用付之剞劂以為南陽鄧氏宗譜已足以信今而傳後亦可以告無憾於先人也夫大清道光十四年夏六月 賜進士欽點翰林院編修裔孫 瀛敬跋"]}, {"heading": "有開半潭照法說處", "subheading": "(地靈潭)", "paragraphs": ["半潭照潭名穴，是由唐宋年間一位白玉禪師所撰的一首詩而得名。詩曰：", "「長沙左右接青羅，右攬青衣濯碧波，深夜一潭星斗現，裏頭容得萬船過，有人下得朝陽穴，十三年內就登科，若是世人尋不得，回頭歸問釣魚歌。」", "另一說法：五世祖 旭（粵冠公子也）", "識云：「長伸左手接新羅，攬走青衣濯碧波，夜靜一潭星宿現，裏頭容得萬船過，有人下得朝陽穴，十三年內一登科，若是世人尋不得，回頭轉問釣魚歌。」（請閱三十五頁）"]}, {"heading": null, "paragraphs": ["鄧始侯諱曼公字德陽商王南庚之子武丁即位封其季父曼於河北之而為鄧侯即今之河北南陽郡也列土分茅世襲侯爵"]}]};
+const T={
+ en:{tagline:'The Tang family genealogy, digitised from the written family books.',
+  aboutT:'About',aboutD:'About this site and the preface to the genealogy.',
+  bookT:'Download the book',bookD:'Get a copy of the family book.',
+  treeT:'View the family tree',treeD:'Explore the interactive tree.',
+  contactT:'Contact',contactD:'Request access, or send corrections and additions.',
+  back:'← Back',cancel:'Cancel',
+  pwPh:'Password',unlock:'Unlock',unlocking:'Unlocking…',download:'Download',preparing:'Preparing…',
+  treeTitle:'View the family tree',treeMsg:'The family tree is private. Enter the password to view it.',
+  bookTitle:'Download the book',bookMsg:'Enter the password to download the family book.',
+  dlStart:'Your download is starting…',
+  e401:'Incorrect password.',eServer:s=>'Server error ('+s+').',eNet:'Could not reach the server. Please try again.',
+  e429:m=>m?'Too many attempts. Try again in about '+m+' minute'+(m===1?'':'s')+'.':'Too many attempts. Try again later.',
+  eBook:'The book is not available yet.',
+  contactP:'To request the password, or to suggest corrections and additions to the genealogy, please email:',
+  noMail:'(contact email not set yet)',
+  aboutH:'About this site',
+  aboutP:['This site digitises the Tang (鄧) family genealogy, 鄧氏族譜, from the written family books, so that family members can explore the lineage generation by generation.',
+          'The interactive family tree is private and protected by a password. If you are family and would like access, or you have spotted a mistake or have something to add, please get in touch from the Contact page.'],
+  sumH:'The preamble in brief',
+  sumNote:'A short English summary of the original text below, for orientation only. The original classical Chinese is the authoritative text.',
+  sumP:['Preface (1475, Chenghua era): the Deng clan of eastern Guangdong traces its origin to Jishui in Jiangxi. The ancestor Deng Fu passed the imperial examinations in the Song dynasty (Chongning era), served as magistrate of Yangchun, and settled at Jintian; the clan has flourished there since. The preface urges descendants to stand on their own merits and honour their forebears.',
+        'Origin of the surname: the Deng were enfeoffed in Hebei by the Shang king Wu Ding, who made his uncle Man the Marquis of Deng; the line was later renewed under Deng Yu of the Eastern Han, and from Jiangxi branches moved south to Guangdong.',
+        'Postscript (1834, Daoguang era): the compiler corrects confusions in earlier genealogies that traced the line to various different founders, takes Marquis Man as the founding ancestor, and cross-checks older genealogies from Jiangsu, Zhejiang, Fujian and Guangdong.',
+        'The final passages record the feng shui poem of the “Half Pool” (半潭照) burial site and the founding Marquis Man.'],
+  origH:'Original preamble · 序'},
+ zh:{tagline:'鄧氏族譜 · 由紙本家譜數碼化',
+  aboutT:'簡介',aboutD:'關於本網站及族譜序文。',
+  bookT:'下載族譜',bookD:'下載族譜電子版。',
+  treeT:'查閱世系',treeD:'瀏覽互動式族譜。',
+  contactT:'聯絡我們',contactD:'索取密碼，或提供更正及補充。',
+  back:'← 返回',cancel:'取消',
+  pwPh:'密碼',unlock:'解鎖',unlocking:'解鎖中…',download:'下載',preparing:'準備中…',
+  treeTitle:'查閱世系',treeMsg:'族譜內容不公開，請輸入密碼查閱。',
+  bookTitle:'下載族譜',bookMsg:'請輸入密碼以下載族譜。',
+  dlStart:'即將開始下載…',
+  e401:'密碼錯誤。',eServer:s=>'伺服器錯誤（'+s+'）。',eNet:'無法連接伺服器，請稍後再試。',
+  e429:m=>m?'嘗試次數過多，請約 '+m+' 分鐘後再試。':'嘗試次數過多，請稍後再試。',
+  eBook:'族譜電子版暫未提供。',
+  contactP:'如欲索取密碼，或對族譜有任何更正及補充，歡迎來信：',
+  noMail:'（尚未設定聯絡電郵）',
+  aboutH:'關於本網站',
+  aboutP:['本網站將鄧氏族譜由紙本家譜數碼化，方便族人逐代查閱世系。',
+          '互動式族譜只供族人瀏覽，需以密碼進入。如欲索取密碼，或發現錯漏、有所補充，歡迎透過「聯絡我們」與我們聯絡。'],
+  origH:'序文原文'}
+};
+let lang='zh';   // default language; a visitor's own choice is remembered
+try{ const sv=localStorage.getItem('site-lang'); if(sv==='zh'||sv==='en') lang=sv; }catch(_){}
+const tr=(k,...a)=>{ const v=T[lang][k]; return typeof v==='function'?v(...a):v; };
+const home=$('#home'), pwBack=$('#pwBack'), gateForm=$('#gateForm'), gatePw=$('#gatePw'), gateBtn=$('#gateBtn'), gateErr=$('#gateErr');
+let pwMode='tree', dataLoaded=false, pwBusy=false;
+
+function aboutHTML(){
+  const sec=(h,paras,cls)=>'<section class="pre-sec">'+(h?'<h2>'+esc(h)+'</h2>':'')+paras.map(p=>'<p'+(cls?' class="'+cls+'"':'')+'>'+esc(p)+'</p>').join('')+'</section>';
+  let h='<article class="pre-page"><span class="pre-seal" aria-hidden="true">鄧</span><h1>'+esc(PREAMBLE.title||'')+'</h1>';
+  h+=sec(tr('aboutH'),tr('aboutP'),lang==='en'?'lat':'');
+  if(lang==='en') h+='<section class="pre-sec"><h2>'+esc(tr('sumH'))+'</h2><p class="note">'+esc(tr('sumNote'))+'</p>'+tr('sumP').map(p=>'<p class="lat">'+esc(p)+'</p>').join('')+'</section>';
+  h+='<section class="pre-sec"><h2>'+esc(tr('origH'))+'</h2></section>';
+  h+=PREAMBLE.sections.map(x=>'<section class="pre-sec">'+(x.heading?'<h2>'+esc(x.heading)+'</h2>':'')+(x.subheading?'<h3>'+esc(x.subheading)+'</h3>':'')+(x.paragraphs||[]).map(p=>'<p>'+esc(p)+'</p>').join('')+'</section>').join('');
+  return h+'</article>';
+}
+function applyLang(){
+  document.documentElement.lang=lang==='zh'?'zh-Hant':'en';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=tr(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ el.placeholder=tr(el.dataset.i18nPh); });
+  document.querySelectorAll('.langsw button').forEach(b=>b.classList.toggle('on',b.dataset.lang===lang));
+  $('#aboutBody').innerHTML=aboutHTML();
+  const ml=$('#mailLink');
+  if(CONTACT_EMAIL){ ml.textContent=CONTACT_EMAIL; ml.href='mailto:'+CONTACT_EMAIL; } else { ml.textContent=tr('noMail'); ml.removeAttribute('href'); }
+  setPwTexts();
+}
+function setPwTexts(){
+  $('#pwTitle').textContent=tr(pwMode==='book'?'bookTitle':'treeTitle');
+  $('#pwMsg').textContent=tr(pwMode==='book'?'bookMsg':'treeMsg');
+  if(!pwBusy) gateBtn.textContent=tr(pwMode==='book'?'download':'unlock');
+}
+document.querySelectorAll('.langsw button').forEach(b=>b.onclick=()=>{ lang=b.dataset.lang; try{ localStorage.setItem('site-lang',lang); }catch(_){} applyLang(); });
+
+/* navigation inside the homepage */
+function homeView(v){ $('#homeMain').hidden=v!=='main'; $('#homeAbout').hidden=v!=='about'; $('#homeContact').hidden=v!=='contact'; home.scrollTop=0; }
+$('#goAbout').onclick=()=>homeView('about');
+$('#goContact').onclick=()=>homeView('contact');
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>homeView('main'));
+function showHome(){ home.hidden=false; homeView('main'); }
+$('#homeBtn').onclick=showHome;
+
+/* password modal */
+function openPw(mode){
+  pwMode=mode; gateErr.textContent=''; gateErr.className='gate-err'; gatePw.value=''; setPwTexts(); pwBack.hidden=false; setTimeout(()=>gatePw.focus(),30);
+}
+function closePw(){ pwBack.hidden=true; gatePw.value=''; }
+$('#pwCancel').onclick=closePw;
+pwBack.addEventListener('mousedown',e=>{ if(e.target===pwBack) closePw(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!pwBack.hidden) closePw(); });
+$('#goTree').onclick=()=>{ if(dataLoaded){ home.hidden=true; window.dispatchEvent(new Event('resize')); } else openPw('tree'); };
+$('#goBook').onclick=()=>openPw('book');
+
+async function callAuth(password,action){
+  if(!AUTH_URL) throw new Error(tr('eNet'));
+  let res;
+  try{ res=await fetch(AUTH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,action})}); }
+  catch(_){ throw new Error(tr('eNet')); }
+  if(res.status===429){ const w=res.headers.get('Retry-After'); throw new Error(tr('e429',w?Math.ceil(w/60):null)); }
+  if(res.status===401) throw new Error(tr('e401'));
+  if(res.status===404) throw new Error(tr('eBook'));
+  if(!res.ok) throw new Error(tr('eServer',res.status));
   return res.json();
 }
-const gate=$('#gate'), gateForm=$('#gateForm'), gatePw=$('#gatePw'), gateBtn=$('#gateBtn'), gateErr=$('#gateErr');
 gateForm.addEventListener('submit',async e=>{
-  e.preventDefault(); const pw=gatePw.value; if(!pw) return;
-  gateBtn.disabled=true; gateBtn.textContent='Unlocking…'; gateErr.textContent='';
+  e.preventDefault(); const pw=gatePw.value; if(!pw||pwBusy) return;
+  pwBusy=true; gateBtn.disabled=true; gateBtn.textContent=tr(pwMode==='book'?'preparing':'unlocking'); gateErr.textContent=''; gateErr.className='gate-err';
   try{
-    const obj=await tryUnlock(pw);
-    try{ sessionStorage.setItem('tree-data',JSON.stringify(obj)); }catch(_){}  // caches the DATA, never the password
-    setData(obj); gate.hidden=true;
+    if(pwMode==='book'){
+      const r=await callAuth(pw,'book');
+      if(!r.url) throw new Error(tr('eBook'));
+      const a=document.createElement('a'); a.href=r.url; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
+      gateErr.className='gate-ok'; gateErr.textContent=tr('dlStart'); setTimeout(closePw,1600);
+    } else {
+      const obj=await callAuth(pw,'tree');
+      try{ sessionStorage.setItem('tree-data',JSON.stringify(obj)); }catch(_){}   // caches the DATA, never the password
+      setData(obj); dataLoaded=true; closePw(); home.hidden=true; window.dispatchEvent(new Event('resize'));
+    }
   }catch(err){
-    gateErr.textContent=err.message||'Something went wrong.';
-    gatePw.select();
-  }finally{ gateBtn.disabled=false; gateBtn.textContent='Unlock'; }
+    gateErr.textContent=err.message||'Error'; gatePw.select();
+  }finally{ pwBusy=false; gateBtn.disabled=false; setPwTexts(); }
 });
-(async()=>{
-  let cached=null; try{ cached=sessionStorage.getItem('tree-data'); }catch(_){}
-  if(cached){
-    try{ setData(JSON.parse(cached)); gate.hidden=true; return; }
-    catch(_){ try{ sessionStorage.removeItem('tree-data'); }catch(__){} }
-  }
-  gatePw.focus();
+
+applyLang();
+(()=>{ let cached=null; try{ cached=sessionStorage.getItem('tree-data'); }catch(_){}
+  if(cached){ try{ setData(JSON.parse(cached)); dataLoaded=true; }catch(_){ try{ sessionStorage.removeItem('tree-data'); }catch(__){} } }
 })();
 })();
 </script>
