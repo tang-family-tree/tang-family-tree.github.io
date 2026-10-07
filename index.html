@@ -180,11 +180,13 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
 .langsw button{border:0;background:none;color:var(--ink-2);padding:6px 14px;border-radius:999px;font-size:13px}
 .langsw button.on{background:var(--ink);color:#fff;font-weight:600}
 .home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 20px 48px}
+#homeMain{width:100%;display:flex;flex-direction:column;align-items:center}
+#homeMain[hidden]{display:none}
 .hero{text-align:center;margin-bottom:34px}
 .hero .pre-seal{display:block;width:60px;height:60px;margin:0 auto 16px;border-radius:9px;background:var(--seal);color:#fbe9e4;font:700 34px/60px var(--serif);text-align:center;box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}
 .hero h1{font:700 40px/1.25 var(--serif);margin:0;letter-spacing:.28em;padding-left:.28em}
 .hero p{margin:10px auto 0;color:var(--ink-2);font-size:15px;max-width:460px;line-height:1.55}
-.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;width:min(640px,100%)}
+.home-grid{margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;width:min(640px,100%)}
 .hcard{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:20px 20px 18px;box-shadow:0 4px 16px rgba(23,32,51,.07);transition:transform .12s,box-shadow .12s,border-color .12s}
 .hcard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(23,32,51,.13);border-color:#b9c4dc}
 .hcard .ic{font-size:26px;line-height:1;margin-bottom:6px}
@@ -197,6 +199,7 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
 .contact-card{text-align:center}
 .contact-card p{font:17px/1.9 var(--serif);text-indent:0;text-align:center}
 .contact-card a{display:inline-block;margin-top:6px;font:600 20px var(--serif);color:var(--blue);word-break:break-all}
+.pre-sec a{color:var(--blue);text-decoration:underline;text-underline-offset:2px}
 .pre-sec p.lat{word-break:normal;overflow-wrap:break-word;text-align:left;text-indent:0;line-height:1.8;font-size:16px}
 .pre-sec .note{word-break:normal;font:14px/1.7 var(--sans);color:var(--muted);text-indent:0}
 #pwBack{position:fixed;inset:0;z-index:110;background:rgba(23,32,51,.55);display:flex;align-items:center;justify-content:center;padding:20px}
@@ -1036,7 +1039,7 @@ const PREAMBLE={"title": "鄧氏族譜", "sections": [{"heading": null, "paragra
 const T={
  en:{tagline:'The Tang family genealogy, digitised from the written family books.',
   aboutT:'About',aboutD:'About this site and the preface to the genealogy.',
-  bookT:'Download the book',bookD:'Get a copy of the family book.',
+  bookT:'Download the book',bookD:'Get a copy of the genealogy book.',
   treeT:'View the family tree',treeD:'Explore the interactive tree.',
   contactT:'Contact',contactD:'Request access, or send corrections and additions.',
   back:'← Back',cancel:'Cancel',
@@ -1047,23 +1050,20 @@ const T={
   e401:'Incorrect password.',eServer:s=>'Server error ('+s+').',eNet:'Could not reach the server. Please try again.',
   e429:m=>m?'Too many attempts. Try again in about '+m+' minute'+(m===1?'':'s')+'.':'Too many attempts. Try again later.',
   eBook:'The book is not available yet.',
-  contactP:'To request the password, or to suggest corrections and additions to the genealogy, please email:',
+  contactP:'To request full access, or to suggest corrections and additions to the genealogy, please email:',
   noMail:'(contact email not set yet)',
   aboutH:'About this site',
   aboutP:['This site digitises the Tang (鄧) family genealogy, 鄧氏族譜, from the written family books, so that family members can explore the lineage generation by generation.',
-          'The interactive family tree is private and protected by a password. If you are family and would like access, or you have spotted a mistake or have something to add, please get in touch from the Contact page.'],
-  sumH:'The preamble in brief',
-  sumNote:'A short English summary of the original text below, for orientation only. The original classical Chinese is the authoritative text.',
-  sumP:['Preface (1475, Chenghua era): the Deng clan of eastern Guangdong traces its origin to Jishui in Jiangxi. The ancestor Deng Fu passed the imperial examinations in the Song dynasty (Chongning era), served as magistrate of Yangchun, and settled at Jintian; the clan has flourished there since. The preface urges descendants to stand on their own merits and honour their forebears.',
-        'Origin of the surname: the Deng were enfeoffed in Hebei by the Shang king Wu Ding, who made his uncle Man the Marquis of Deng; the line was later renewed under Deng Yu of the Eastern Han, and from Jiangxi branches moved south to Guangdong.',
-        'Postscript (1834, Daoguang era): the compiler corrects confusions in earlier genealogies that traced the line to various different founders, takes Marquis Man as the founding ancestor, and cross-checks older genealogies from Jiangsu, Zhejiang, Fujian and Guangdong.',
-        'The final passages record the feng shui poem of the “Half Pool” (半潭照) burial site and the founding Marquis Man.'],
-  origH:'Original preamble · 序'},
+          'Our family history stretches from the BC era (estimated) to the present day, spanning more than 127 generations. As is well <a href="https://en.wikipedia.org/wiki/Tang_Clan" target="_blank">documented</a>, Tang Wai-Kap (鄧惟汲) married a princess of the Southern Song dynasty, a daughter of Emperor Gaozong of Song (12 June 1107 – 9 November 1187). Their eldest son was Tang Lum (鄧林). Thanks to this royal connection, the lineage has been carefully preserved in the family books, both before, and after these generations.',
+          'My grandfather, Tang Yiu-Kwan (鄧耀坤), compiled the entire genealogy in its current form in his later years, and wrote its preface, detailing the history and significance of this work. In the era of generative AI, I wanted to digitised it, and continue his to extend the family genealogy.',
+          'The interactive family tree is private. If you are family and would like access, or you have spotted a mistake or have something to add, please get in touch from the Contact page.',
+          'J. K. Tang (鄧啟賢)'],
+  origH:'Original preamble (translation to come, please reach out if you want to translate this in full to English)· 序'},
  zh:{tagline:'鄧氏族譜 · 由紙本家譜數碼化',
   aboutT:'簡介',aboutD:'關於本網站及族譜序文。',
   bookT:'下載族譜',bookD:'下載族譜電子版。',
   treeT:'查閱世系',treeD:'瀏覽互動式族譜。',
-  contactT:'聯絡我們',contactD:'索取密碼，或提供更正及補充。',
+  contactT:'聯絡我們',contactD:'要求完整存取權限，或提供更正及補充。',
   back:'← 返回',cancel:'取消',
   pwPh:'密碼',unlock:'解鎖',unlocking:'解鎖中…',download:'下載',preparing:'準備中…',
   treeTitle:'查閱世系',treeMsg:'族譜內容不公開，請輸入密碼查閱。',
@@ -1072,11 +1072,15 @@ const T={
   e401:'密碼錯誤。',eServer:s=>'伺服器錯誤（'+s+'）。',eNet:'無法連接伺服器，請稍後再試。',
   e429:m=>m?'嘗試次數過多，請約 '+m+' 分鐘後再試。':'嘗試次數過多，請稍後再試。',
   eBook:'族譜電子版暫未提供。',
-  contactP:'如欲索取密碼，或對族譜有任何更正及補充，歡迎來信：',
+  contactP:'如欲申請完整存取權限，或對族譜有任何更正及補充，歡迎來信：',
   noMail:'（尚未設定聯絡電郵）',
   aboutH:'關於本網站',
-  aboutP:['本網站將鄧氏族譜由紙本家譜數碼化，方便族人逐代查閱世系。',
-          '互動式族譜只供族人瀏覽，需以密碼進入。如欲索取密碼，或發現錯漏、有所補充，歡迎透過「聯絡我們」與我們聯絡。'],
+  aboutP:['本網站將鄧氏族譜由紙本族譜數碼化,讓族人可以逐代探索家族世系。',
+          '我們的家族歷史可追溯至公元前(約略估計),延續至今,共逾127代。正如<a href="https://en.wikipedia.org/wiki/Tang_Clan">史料所載</a>,鄧惟汲迎娶南宋公主,即宋高宗(1107年6月12日—1187年11月9日)之女,二人的長子為鄧林。由於這層皇室淵源,族譜得以妥善保存,前後各代均有記載。',
+          '我的祖父鄧耀坤晚年將整部族譜編纂成現今的版本,並撰寫序言,詳述這部族譜的歷史與意義。在生成式人工智能的時代,我希望將其數碼化,延續祖父的工作。',
+          '互動家族樹並不公開。如果你是族人並希望申請查閱權限,或發現有錯誤、有所補充,請透過「聯絡」頁面與我們聯繫。',
+          '鄧啟賢'
+          ],
   origH:'序文原文'}
 };
 let lang='zh';   // default language; a visitor's own choice is remembered
@@ -1086,10 +1090,11 @@ const home=$('#home'), pwBack=$('#pwBack'), gateForm=$('#gateForm'), gatePw=$('#
 let pwMode='tree', dataLoaded=false, pwBusy=false;
 
 function aboutHTML(){
-  const sec=(h,paras,cls)=>'<section class="pre-sec">'+(h?'<h2>'+esc(h)+'</h2>':'')+paras.map(p=>'<p'+(cls?' class="'+cls+'"':'')+'>'+esc(p)+'</p>').join('')+'</section>';
+  /* text is HTML-escaped; the only markup allowed is <a href="https://…">…</a> (opens in a new tab) */
+  const rich=t=>esc(t).replace(/&lt;a href=&quot;(https?:\/\/[^&"<>\s]+?)&quot;(?: target=&quot;_blank&quot;)?&gt;(.+?)&lt;\/a&gt;/g,(m,u,x)=>'<a href="'+u+'" target="_blank" rel="noopener noreferrer">'+x+'</a>');
+  const sec=(h,paras,cls)=>'<section class="pre-sec">'+(h?'<h2>'+esc(h)+'</h2>':'')+paras.map(p=>'<p'+(cls?' class="'+cls+'"':'')+'>'+rich(p)+'</p>').join('')+'</section>';
   let h='<article class="pre-page"><span class="pre-seal" aria-hidden="true">鄧</span><h1>'+esc(PREAMBLE.title||'')+'</h1>';
   h+=sec(tr('aboutH'),tr('aboutP'),lang==='en'?'lat':'');
-  if(lang==='en') h+='<section class="pre-sec"><h2>'+esc(tr('sumH'))+'</h2><p class="note">'+esc(tr('sumNote'))+'</p>'+tr('sumP').map(p=>'<p class="lat">'+esc(p)+'</p>').join('')+'</section>';
   h+='<section class="pre-sec"><h2>'+esc(tr('origH'))+'</h2></section>';
   h+=PREAMBLE.sections.map(x=>'<section class="pre-sec">'+(x.heading?'<h2>'+esc(x.heading)+'</h2>':'')+(x.subheading?'<h3>'+esc(x.subheading)+'</h3>':'')+(x.paragraphs||[]).map(p=>'<p>'+esc(p)+'</p>').join('')+'</section>').join('');
   return h+'</article>';
