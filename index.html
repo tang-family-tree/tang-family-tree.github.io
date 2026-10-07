@@ -15,7 +15,7 @@
   --sans:"PingFang TC","Microsoft JhengHei","Noto Sans CJK TC",-apple-system,"Segoe UI",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
+html,body{height:100%;margin:0;overflow-x:hidden}
 body{font:13px/1.45 var(--sans);color:var(--ink);background:var(--ground);display:flex;flex-direction:column;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -57,7 +57,7 @@ body.locked .edctx~label,body.locked #edRel,body.locked #edSave,body.locked #edD
 .info .hint{color:var(--muted);margin-left:auto}
 
 /* stage */
-main{position:relative;flex:1;min-height:0}
+main{position:relative;flex:1;min-height:0;overflow:hidden}   /* clips the off-screen side panel so phones don't widen the layout viewport */
 #viewport{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none;
   background-image:radial-gradient(circle,#d3d8e1 1px,transparent 1.2px);background-size:22px 22px}
 #viewport.grabbing{cursor:grabbing}
@@ -250,6 +250,17 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
 @media (max-width:420px){
   .hbtn{padding:6px 9px;font-size:12.5px}
   .brand b{font-size:14px}
+}
+@media (max-width:700px){
+  /* compact, thumb-friendly header on phones */
+  header{gap:6px 8px;padding:6px 10px}
+  header .brand{display:none}
+  .hbtn,.toggle button{min-height:38px}
+  .toggle button{padding:6px 11px}
+  .search input{min-height:38px}
+  #genLabel{white-space:nowrap;max-width:none;flex:1;min-width:0}
+  .genjump{gap:6px}
+  .zoom button{width:44px;height:44px}
 }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
@@ -752,7 +763,7 @@ viewport.addEventListener('pointerdown',e=>{
   try{ viewport.setPointerCapture(e.pointerId); }catch(_){}
   pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(pointers.size===1){
-    drag={x:e.clientX,y:e.clientY,tx,ty,moved:false,pid:e.pointerId}; pinch=null;
+    drag={x:e.clientX,y:e.clientY,tx,ty,moved:false,pid:e.pointerId,node:(e.target.closest&&e.target.closest('.node'))||null}; pinch=null;   // remember the card under the finger: pointer capture retargets pointerup to the canvas
   } else if(pointers.size===2){
     drag=null; tip.style.display='none'; viewport.classList.remove('grabbing');
     const [a,b]=[...pointers.values()];
@@ -775,15 +786,14 @@ window.addEventListener('pointermove',e=>{
   else tip.style.display='none';
 });
 function endPointer(e){
-  const wasDrag=drag&&drag.pid===e.pointerId, moved=wasDrag&&drag.moved, clientX=e.clientX, clientY=e.clientY, type=e.pointerType;
+  const wasDrag=drag&&drag.pid===e.pointerId, moved=wasDrag&&drag.moved, downNode=wasDrag?drag.node:null, clientX=e.clientX, clientY=e.clientY, type=e.pointerType;
   pointers.delete(e.pointerId);
   if(wasDrag) drag=null;
   if(pointers.size<2) pinch=null;
   viewport.classList.remove('grabbing');
   if(pointers.size===1&&!pinch){ const [[pid,p]]=pointers; drag={x:p.x,y:p.y,tx,ty,moved:true,pid}; }
   if(wasDrag&&!moved){
-    const n=e.target.closest&&e.target.closest('.node');
-    if(n&&n._id){ onNodeClick(n._id); return; }
+    if(downNode&&downNode._id){ onNodeClick(downNode._id); return; }
     if(type&&type!=='mouse'){                       // double-tap empty canvas to zoom in
       const now=Date.now(), pt={x:clientX,y:clientY};
       if(now-lastTap<320&&lastTapPt&&Math.hypot(pt.x-lastTapPt.x,pt.y-lastTapPt.y)<30){
