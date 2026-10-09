@@ -1035,6 +1035,17 @@ resize();
 const CFG=window.SITE_CONFIG||{};
 const AUTH_URL=CFG.AUTH_URL||'';
 const CONTACT_EMAIL=CFG.CONTACT_EMAIL||'';
+/* Google Analytics 4: loads only when GA_MEASUREMENT_ID is set in config.js.
+   The site never changes URL, so each view is sent as a virtual page view (e.g. /#about). */
+const GA_ID=CFG.GA_MEASUREMENT_ID||'';
+if(GA_ID){
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=function(){ window.dataLayer.push(arguments); };
+  gtag('js',new Date()); gtag('config',GA_ID);
+  const s=document.createElement('script'); s.async=true; s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(GA_ID); document.head.appendChild(s);
+}
+function track(name,params){ if(GA_ID) window.gtag('event',name,params||{}); }
+function trackView(v){ track('page_view',{page_title:v,page_location:location.origin+location.pathname+'#'+v}); }
 const PREAMBLE={"title": "鄧氏族譜", "sections": [{"heading": null, "paragraphs": ["東粵著姓，以鄧為首，稱厥先江西吉水人。有諱符者，在宋朝崇寧間登進士，授陽春令，權南雄路，居于桂甫山之錦田，歷年既久，族大以蕃，稱詩書者必歸之。今其十四世孫廷楨，以書經膺鄉薦，來京師，學有莫逆之好，以所修譜徵文為序。竊聞其自符公以來，有為稅院郡馬者，有授承直郎者，有掇科登仕以勛業著者，後先相望，皆能迪仁蹈義，而敦詩書禮樂之習，文物彬彬，視昔有加。祖宗積德于前，而哲人繼承于後，曷以臻此。於戲，有起自犁鋤，降及僮隸之，在乎人之能自立與不能自立而已。苟能自立，雖微而寖著；如不能自立，雖著而寖微。盛衰興替，亦何嘗之有？為鄧氏子孫，可不思有以卓立，沂其澤而會其源，培其德而厚其本，求無忝于厥先，則庻乎傳之永乆而耀也。", "張子曰：「子孫賢，族將大。」然則鄧氏所積之厚，而發達之遠者，其將有俟與。余與鄧君友義，不可辭，故樂序其譜傳，俾為子孫者知先世之盛，思有以卓立而嗣守于無窮焉。成化乙未年三月上澣 賜進士出，身觀都察院政 莆田年家弟愷書。"]}, {"heading": "鄧氏得姓考", "paragraphs": ["按姓氏考武丁封叔父于河北為鄧侯後因為氏鄧固司徒契之裔而帝嚳高辛氏次妃簡狄之所出也其在周見于經則春秋魯恒公七年書曰鄧侯吾離來朝左傳莊公六年書云楚文王過申伐鄧祈侯曰吾甥也高享之及楚伐申還遂伐鄧至周僖王四年癸卯復伐鄧併之而鄧遂入于楚秦始皇二十四年戊寅歲王剪虜楚王負芻郡其地而鄧遂入于秦其故墟今之南陽鄧州是矣迨至東漢有諱禹者字仲華諡元侯杖策追帝助光武定天下侯高密而鄧氏又再興焉禹之後其裔最繁有流于江右者世居吉安府吉水縣之白沙村嗣有漢黻名者仕宋官承務郎即為遷粵之鼻祖厥曾孫登崇宣進士授陽春令權南雄倅入廣樂風土之美即于寶安之岑田居延綿于今簪纓勿替族派殷蕃有譜以記之必詳志得氏之始庶水源木本知其所自興"]}, {"heading": "重修鄧氏族譜後跋", "paragraphs": ["萬物本乎天人本乎祖則尊祖敬宗收族固為人生之巨要而不可不講明斯道矣但款明是道端本乎譜焉我南陽鄧氏則何如乎閱嘗閱覽諸譜有自處唐朝者則以唐朝開基為始祖唐以上則遺忘矣有自處宋朝者則以宋朝開基為始祖宋以上則遺忘矣又有上溯本源即以 禹公為始祖者禹公以上則遺忘矣然我鄧氏宗譜大都以禹公為始祖也何其失諸前代之祖系乎夫禹公生于東漢而南陽鄧氏非自漢始也所以 禹公以上不得其源遂有妄以宗乎四岳者然四岳本是羌姓妄以宗乎微子者然微子抱器存商仍是子姓妄以宗乎軒轅者然軒轅出自軒轅之址公孫也妄以宗乎泰伯者然泰伯分封於吳而其後以吳為姓也于我鄧氏奚啻逕庭惟我國朝康熙字典註釋商王武丁封季父曼於河北洵為鄧氏之祖系矣于是詩書之暇不敢憚煩搜羅上古珍藏者簿原載曼公為始祖也歷代根源悉註分明更採訪江浙閩粵諸區俊佐儔三公之派各處所輯舊譜相與對覈叅考間有序廣宗公為禹公之長子者寔乃禹公之曾孫也至康公者乃隲公之從弟係卓公之從叔父也而有錯序為卓公之子者又艾公者生於後漢相去安帝既百六十有餘年矣而有錯序為康公之子者旦公興起輔公相去六百餘年而有竟以一代繁之者至公者羌故胡之别種也而有錯序為起輔公之子者又相公者乃儔公之子顯公之嫡堂弟也而有錯序為顯公之子者又禹公至艾公相去二百餘年而有以十五代孫係之者又有唐朝三百餘年渺無一祖可也於戲歷觀羣譜倒亂昭穆究何以悉數兹曼公封國世系再加詳究叅考修明閒或偽妄者刪之遺忘者補之失次者序之俾我鄧氏根源支派秩然而不紊焉尊祖敬宗收族之道森然而不失焉是用付之剞劂以為南陽鄧氏宗譜已足以信今而傳後亦可以告無憾於先人也夫大清道光十四年夏六月 賜進士欽點翰林院編修裔孫 瀛敬跋"]}, {"heading": "有開半潭照法說處", "subheading": "(地靈潭)", "paragraphs": ["半潭照潭名穴，是由唐宋年間一位白玉禪師所撰的一首詩而得名。詩曰：", "「長沙左右接青羅，右攬青衣濯碧波，深夜一潭星斗現，裏頭容得萬船過，有人下得朝陽穴，十三年內就登科，若是世人尋不得，回頭歸問釣魚歌。」", "另一說法：五世祖 旭（粵冠公子也）", "識云：「長伸左手接新羅，攬走青衣濯碧波，夜靜一潭星宿現，裏頭容得萬船過，有人下得朝陽穴，十三年內一登科，若是世人尋不得，回頭轉問釣魚歌。」（請閱三十五頁）"]}, {"heading": null, "paragraphs": ["鄧始侯諱曼公字德陽商王南庚之子武丁即位封其季父曼於河北之而為鄧侯即今之河北南陽郡也列土分茅世襲侯爵"]}]};
 const T={
  en:{tagline:'The Tang family genealogy, digitised from the written family books.',
@@ -1117,7 +1128,7 @@ function setPwTexts(){
 document.querySelectorAll('.langsw button').forEach(b=>b.onclick=()=>{ lang=b.dataset.lang; try{ localStorage.setItem('site-lang',lang); }catch(_){} applyLang(); });
 
 /* navigation inside the homepage */
-function homeView(v){ $('#homeMain').hidden=v!=='main'; $('#homeAbout').hidden=v!=='about'; $('#homeContact').hidden=v!=='contact'; home.scrollTop=0; }
+function homeView(v){ $('#homeMain').hidden=v!=='main'; $('#homeAbout').hidden=v!=='about'; $('#homeContact').hidden=v!=='contact'; home.scrollTop=0; trackView(v==='main'?'home':v); }
 $('#goAbout').onclick=()=>homeView('about');
 $('#goContact').onclick=()=>homeView('contact');
 document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>homeView('main'));
@@ -1132,7 +1143,7 @@ function closePw(){ pwBack.hidden=true; gatePw.value=''; }
 $('#pwCancel').onclick=closePw;
 pwBack.addEventListener('mousedown',e=>{ if(e.target===pwBack) closePw(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!pwBack.hidden) closePw(); });
-$('#goTree').onclick=()=>{ if(dataLoaded){ home.hidden=true; window.dispatchEvent(new Event('resize')); } else openPw('tree'); };
+$('#goTree').onclick=()=>{ if(dataLoaded){ trackView('tree'); home.hidden=true; window.dispatchEvent(new Event('resize')); } else openPw('tree'); };
 $('#goBook').onclick=()=>openPw('book');
 
 async function callAuth(password,action){
@@ -1154,11 +1165,11 @@ gateForm.addEventListener('submit',async e=>{
       const r=await callAuth(pw,'book');
       if(!r.url) throw new Error(tr('eBook'));
       const a=document.createElement('a'); a.href=r.url; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
-      gateErr.className='gate-ok'; gateErr.textContent=tr('dlStart'); setTimeout(closePw,1600);
+      track('book_download'); gateErr.className='gate-ok'; gateErr.textContent=tr('dlStart'); setTimeout(closePw,1600);
     } else {
       const obj=await callAuth(pw,'tree');
       try{ sessionStorage.setItem('tree-data',JSON.stringify(obj)); }catch(_){}   // caches the DATA, never the password
-      setData(obj); dataLoaded=true; closePw(); home.hidden=true; window.dispatchEvent(new Event('resize'));
+      setData(obj); dataLoaded=true; trackView('tree'); closePw(); home.hidden=true; window.dispatchEvent(new Event('resize'));
     }
   }catch(err){
     gateErr.textContent=err.message||'Error'; gatePw.select();
