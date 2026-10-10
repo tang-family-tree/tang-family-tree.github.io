@@ -377,7 +377,7 @@ let mmBase=null, mmDirty=true, mmXf=null, rafId=0, vw=0, vh=0, dpr=1, sliderDrag
 const CJK=/[\u3400-\u9fff]/;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function fullName(p){ if(!p) return 'Unknown'; const f=p.firstName||'', l=p.lastName||''; return CJK.test(f+l)? (l+f) : [f,l].filter(Boolean).join(' ') || 'Unnamed'; }
+function fullName(p){ if(!p) return 'Unknown'; if(p.useEnglishName&&englishName(p)) return englishName(p); const f=p.firstName||'', l=p.lastName||''; return CJK.test(f+l)? (l+f) : [f,l].filter(Boolean).join(' ') || 'Unnamed'; }
 function years(p){ const b=p.birthYear, d=p.deathYear; if(b==null&&d==null) return ''; return (b??'?')+' – '+(d??''); }
 const DIG='零一二三四五六七八九';
 function cn(n){ if(n<=0) return String(n); if(n<10) return DIG[n]; if(n<20) return '十'+(n%10?DIG[n%10]:''); if(n<100) return DIG[(n/10)|0]+'十'+(n%10?DIG[n%10]:'');
@@ -566,7 +566,7 @@ function paintNode(el,id,dot){
 function cardHTML(p){
   const g=p.gender==='M'?'<span class="gb m" aria-label="male">♂</span>':p.gender==='F'?'<span class="gb f" aria-label="female">♀</span>':'';
   const y=years(p);
-  const en=englishName(p);
+  const en=p.useEnglishName?'':englishName(p);
   return g+`<div class="sh">${esc(shiTag(p.generation))}</div><div class="nm">${esc(fullName(p))}</div>`+(en?`<div class="en">${esc(en)}</div>`:'')+
     (p.maidenName?`<div class="mn">née ${esc(p.maidenName)}</div>`:'')+(y?`<div class="yr">${esc(y)}</div>`:'')+
     (p.birthPlace?`<div class="pl">📍 ${esc(p.birthPlace)}</div>`:'');
@@ -697,7 +697,7 @@ function otherSpouse(u,id){ return u.spouseIds.filter(s=>s!==id).map(s=>idx.byId
 function openPanel(id){
   const p=idx.byId.get(id); if(!p) return;
   const us=idx.unionsByPerson.get(id)||[];
-  let h=`<div class="ph"><div class="gl">${esc(genLabel(p.generation))}</div><h2>${esc(fullName(p))}</h2>`+(englishName(p)?`<div class="enn">${esc(englishName(p))}</div>`:'')+
+  let h=`<div class="ph"><div class="gl">${esc(genLabel(p.generation))}</div><h2>${esc(fullName(p))}</h2>`+(englishName(p)&&!p.useEnglishName?`<div class="enn">${esc(englishName(p))}</div>`:'')+
     (p.maidenName?`<div class="mdn">née ${esc(p.maidenName)}</div>`:'')+`<button class="x" id="pClose" aria-label="Close">×</button></div><div class="pb">`;
   if(p.isDirectLine) h+=`<span class="badge">Direct ancestor</span>`;
   const g={M:'Male',F:'Female',Other:'Other'}[p.gender]||'Unknown';
@@ -821,13 +821,14 @@ viewport.addEventListener('pointerdown',()=>{ if(!$('#infoPop').hidden){ $('#inf
 /* ---------- data model ----------
    The file stores people only. Each person names a father, a mother and their spouses.
    Unions, generations and the direct line are worked out here every time the tree loads. */
-const FIELDS=['id','firstName','lastName','englishSurname','englishFirstName','maidenName','gender','birthYear','deathYear','birthPlace','fatherId','motherId','adoptiveFatherId','spouses','notes'];
+const FIELDS=['id','firstName','lastName','englishSurname','englishFirstName','maidenName','gender','birthYear','deathYear','birthPlace','fatherId','motherId','adoptiveFatherId','spouses','notes','useEnglishName'];
 const GUIDE={
   people:'One entry per person. Only fatherId, motherId and spouses link people together; use the person ids (P0001…).',
   fatherId:'Id of this person\u2019s father, or null if not recorded.',
   motherId:'Id of this person\u2019s mother, or null if not recorded.',
   spouses:'Marriages, e.g. [{"id":"P0402","notes":"繼室"}]. Record each marriage on one of the two people only.',
   adoptiveFatherId:'Optional. Id of the person this son was made heir to (過嗣).',
+  useEnglishName:'Optional. Set to true to show the English name as the main (bold) name, e.g. for someone with no Chinese name.',
   generations:'Worked out automatically, counting from meta.rootId (the person marked \u201cme\u201d).'
 };
 function fromLegacy(obj){                      // older files with a separate "unions" list
@@ -887,7 +888,7 @@ function derive(){
   data.unions=unions;
 }
 function cleanPerson(p){
-  const o={}; for(const k of FIELDS){ if(k==='adoptiveFatherId'&&!p[k]) continue;
+  const o={}; for(const k of FIELDS){ if((k==='adoptiveFatherId'||k==='useEnglishName')&&!p[k]) continue;
     o[k]=k==='spouses'?p.spouses.map(s=>{ const e={id:s.id}; if(s.notes) e.notes=s.notes; if(s.startYear!=null) e.startYear=s.startYear; if(s.endYear!=null) e.endYear=s.endYear; return e; }):(p[k]===undefined?null:p[k]); }
   return o;
 }
