@@ -42,6 +42,31 @@ header{min-height:56px;flex:none;background:var(--ink);color:#eef1f7;display:fle
 .hbtn.unlocked{background:#2b3a22;border-color:#3f5a2c;color:#d9f0c7}
 body.locked .acts,body.locked #exportBtn,body.locked #loadBtn{display:none!important}
 body.locked .edctx~label,body.locked #edRel,body.locked #edSave,body.locked #edDelete{display:none!important}
+/* suggestions: read-only visitors propose relatives, sent for review (not saved into the tree) */
+body.locked #editModal.suggest .edctx~label{display:flex!important}
+body.locked #editModal.suggest #edRel{display:block!important}
+body.locked #editModal.suggest #edSave,body.locked #editModal.suggest #edDelete:not([hidden]){display:inline-block!important}
+body:not(.locked) .sugg{display:none}
+.sugg{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule)}
+.sugg .sl{font-size:12px;color:var(--ink-2);margin-bottom:6px}
+.sugg .bs{display:flex;flex-wrap:wrap;gap:5px}
+.sugg button{border:1px solid var(--rule);background:#fff;border-radius:7px;padding:5px 9px;font-size:12px}
+.sugg button:hover:not(:disabled){border-color:var(--seal);color:var(--seal)}
+.sugg button:disabled{opacity:.45;cursor:not-allowed}
+.sugg .edit{background:var(--seal);border-color:var(--seal);color:#fff}
+.badge.sg{background:#fbe9e4;color:var(--seal)}
+.card.sugg-card{border:1px dashed var(--seal);border-top:3px dashed var(--seal);background:#fffaf6}
+#sugBar{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px);
+  background:var(--ink);color:#fff;border-radius:999px;padding:5px 6px 5px 14px;font-size:12px;box-shadow:0 6px 18px rgba(23,32,51,.25);white-space:nowrap}
+#sugBar[hidden]{display:none}
+#sugBar span{overflow:hidden;text-overflow:ellipsis}
+#sugBar button{border:0;border-radius:999px;padding:5px 11px;font-size:12px;background:#fff;color:var(--ink);font-weight:600}
+#sugBar button.ghost{background:none;color:#c0c9dc;font-weight:500}
+.sendlist{margin:0;padding:0;list-style:none;border:1px solid var(--rule);border-radius:8px}
+.sendlist li{padding:6px 10px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-2)}
+.sendlist li:first-child{border-top:0}
+.sendlist b{font:700 13px var(--serif);color:var(--ink);margin-right:6px}
+.sendp{font-size:12.5px;color:var(--ink-2);margin:0}
 .genjump{display:flex;align-items:center;gap:8px;color:#b9c2d6;font-size:12px}
 .genjump input[type=range]{width:130px;accent-color:#7ea0ff}
 #genLabel{min-width:90px;max-width:170px;overflow:hidden;text-overflow:ellipsis;color:#eef1f7}
@@ -299,6 +324,7 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
   <div class="infopop" id="infoPop" role="note" hidden><q id="infoText"></q><small id="infoAt"></small></div>
   <div class="mini"><canvas id="minimap" width="148" height="120" aria-label="Minimap"></canvas></div>
   <aside id="panel" aria-label="Person details"></aside>
+  <div id="sugBar" role="status" hidden><span id="sugCount"></span><button type="button" id="sugSend"></button><button type="button" class="ghost" id="sugDiscard"></button></div>
 </main>
 <div id="home">
   <div class="home-top"><div class="langsw" role="group" aria-label="Language"><button type="button" data-lang="en">English</button><button type="button" data-lang="zh">中文</button></div></div>
@@ -355,6 +381,22 @@ body.panel-open .infobtn,body.panel-open .infopop{right:289px}
     </div>
     <div class="mf"><button class="danger" id="edDelete">Delete person</button><span style="flex:1"></span><button data-close="editModal">Cancel</button><button class="primary" id="edSave">Save</button></div>
   </div>
+</div>
+
+<div class="mback" id="sendModal" hidden>
+  <form class="modal" role="dialog" aria-labelledby="sendTitle" id="sendForm" autocomplete="on">
+    <div class="mh"><span id="sendTitle"></span><button type="button" data-close="sendModal" aria-label="Close">×</button></div>
+    <div class="mb">
+      <p class="sendp full" id="sendIntro"></p>
+      <ul class="sendlist full" id="sendList"></ul>
+      <label><span id="sNameL"></span><input id="sName" autocomplete="name" maxlength="100"></label>
+      <label><span id="sEmailL"></span><input id="sEmail" type="email" autocomplete="email" maxlength="200"></label>
+      <label class="full"><span id="sNoteL"></span><textarea id="sNote" rows="3" maxlength="2000"></textarea></label>
+      <label class="full"><span id="sPwL"></span><input id="sPw" type="password" autocomplete="current-password"></label>
+      <div class="err" id="sErr" role="alert"></div>
+    </div>
+    <div class="mf"><button type="button" data-close="sendModal" id="sCancel"></button><button type="submit" class="primary" id="sSend"></button></div>
+  </form>
 </div>
 
 <script src="config.js"></script>
@@ -555,7 +597,7 @@ function paintNode(el,id,dot){
   const key=mode+(dot?'d':'c')+(p.isDirectLine?1:0)+(sel?1:0)+(dim?1:0);
   if(el._id!==id||el._key!==key){
     el._id=id; el._key=key;
-    el.className='node '+(dot?'dot':'card')+(p.isDirectLine?' direct':'')+(sel?' sel':'')+(dim?' dim':'')+(mode==='direct'&&!dot?' spine':'');
+    el.className='node '+(dot?'dot':'card')+(p.isDirectLine?' direct':'')+(sel?' sel':'')+(dim?' dim':'')+(mode==='direct'&&!dot?' spine':'')+(p._new&&!dot?' sugg-card':'');
     if(dot){ el.innerHTML=''; el.dataset.tip=fullName(p)+(years(p)?'\n'+years(p):''); }
     else { delete el.dataset.tip; el.innerHTML=cardHTML(p); }
   }
@@ -699,6 +741,7 @@ function openPanel(id){
   const us=idx.unionsByPerson.get(id)||[];
   let h=`<div class="ph"><div class="gl">${esc(genLabel(p.generation))}</div><h2>${esc(fullName(p))}</h2>`+(englishName(p)&&!p.useEnglishName?`<div class="enn">${esc(englishName(p))}</div>`:'')+
     (p.maidenName?`<div class="mdn">née ${esc(p.maidenName)}</div>`:'')+`<button class="x" id="pClose" aria-label="Close">×</button></div><div class="pb">`;
+  if(p._new) h+=`<span class="badge sg">Your suggestion · not sent yet</span>`;
   if(p.isDirectLine) h+=`<span class="badge">Direct ancestor</span>`;
   const g={M:'Male',F:'Female',Other:'Other'}[p.gender]||'Unknown';
   h+=`<div class="sec"><h3>Life details</h3><dl class="kv"><dt>Generation</dt><dd>${esc(shiTag(p.generation))}</dd><dt>Born</dt><dd>${esc([p.birthYear,p.birthPlace].filter(v=>v!=null&&v!=='').join(' • ')||'—')}</dd>`+
@@ -723,6 +766,11 @@ function openPanel(id){
   if(p.notes) h+=`<div class="sec"><h3>Notes</h3><div class="notes">${esc(p.notes)}</div></div>`;
   h+=`<div class="acts"><button class="edit" data-act="edit">✎ Edit</button><button data-act="son">＋ Son</button><button data-act="daughter">＋ Daughter</button><button data-act="spouse">＋ Spouse</button>`+
      (p.fatherId?'':`<button data-act="father">＋ Father</button>`)+(p.motherId?'':`<button data-act="mother">＋ Mother</button>`)+`</div>`;
+  const noPar=!p.fatherId&&!p.motherId, sibTip=noPar?' disabled title="Add a father or mother first"':'';
+  h+=`<div class="sugg"><div class="sl">${p._new?'Your suggestion. Change it, or add their relatives:':'Know a relative who is missing? Suggest them:'}</div><div class="bs">`+
+     (p._new?`<button class="edit" data-sug="edit">✎ Edit</button>`:'')+
+     `<button data-sug="son">＋ Son</button><button data-sug="daughter">＋ Daughter</button><button data-sug="brother"${sibTip}>＋ Brother</button><button data-sug="sister"${sibTip}>＋ Sister</button><button data-sug="spouse">＋ Spouse</button>`+
+     (p.fatherId?'':`<button data-sug="father">＋ Father</button>`)+(p.motherId?'':`<button data-sug="mother">＋ Mother</button>`)+`</div></div>`;
   h+=`<div class="pact"><button class="pbtn" data-center="${esc(id)}">Center in view</button><button class="pbtn" data-root="${esc(id)}" title="Make this person generation 0 and redraw the direct line">Set as me</button></div></div>`;
   const panel=$('#panel'); panel.innerHTML=h; document.body.classList.add('panel-open');
 }
@@ -733,6 +781,7 @@ $('#panel').addEventListener('click',e=>{
   const c=e.target.closest('[data-center]'); if(c){ centerOn(c.dataset.center); return; }
   const r=e.target.closest('[data-root]'); if(r){ setRoot(r.dataset.root); return; }
   const a=e.target.closest('[data-act]'); if(a&&selectedId) openEditor(a.dataset.act,selectedId);
+  const sg=e.target.closest('[data-sug]'); if(sg&&!sg.disabled&&selectedId) openEditor(sg.dataset.sug,selectedId,true);
 });
 function setRoot(id){
   const p=idx.byId.get(id); if(!p) return;
@@ -924,15 +973,16 @@ function setData(obj){
   const ids=new Set(); for(const p of obj.people){ if(ids.has(p.id)) throw new Error('Duplicate id '+p.id); ids.add(p.id); }
   if(Array.isArray(obj.unions)) obj=fromLegacy(obj);
   obj.meta=obj.meta||{};
-  data=obj; selectedId=null; matches=null; matchList=[]; $('#search').value=''; closePanel();
+  data=obj; sugBase=null; selectedId=null; matches=null; matchList=[]; $('#search').value=''; closePanel();
   mode='full'; 
-  rebuild(true);
+  rebuild(true); if(typeof updateSugBar==='function') updateSugBar();
 }
 $('#loadBtn').onclick=()=>{ if(document.body.classList.contains('locked')){ toast('Click 🔓 Editing to load a file on this device.'); return; } $('#fileIn').click(); };
 $('#fileIn').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader();
   r.onload=()=>{ try{ setData(JSON.parse(r.result)); toast('Loaded '+data.people.length+' people from '+f.name); }catch(err){ toast('Could not load '+f.name+': '+err.message); } e.target.value=''; };
   r.readAsText(f); });
 $('#exportBtn').onclick=()=>{
+  if(drafts().length){ toast('Send or discard the suggestions first (bar at the top of the tree).'); return; }
   const blob=new Blob([exportText()],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='family-tree.json'; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast('Exported family-tree.json');
@@ -951,15 +1001,20 @@ function choiceHTML(name,label,people,current,hint){
     people.map(q=>`<label><input type="radio" name="${name}" value="${esc(q.id)}"${q.id===current?' checked':''}>${esc(fullName(q))}</label>`).join('')+
     `<label><input type="radio" name="${name}" value=""${!current?' checked':''}>Not recorded</label></div>`+(hint?`<div class="hint2">${esc(hint)}</div>`:'')+`</div>`;
 }
-function openEditor(act,anchorId){
-  if(document.body.classList.contains('locked')){ toast('Click 🔓 Editing to make changes on this device.'); return; }
+const REL={son:'Son of',daughter:'Daughter of',brother:'Brother of',sister:'Sister of',spouse:'Spouse of',father:'Father of',mother:'Mother of'};
+function openEditor(act,anchorId,suggest){
   const a=idx.byId.get(anchorId); if(!a) return;
-  ed={act,anchorId}; const set=(id,v)=>$('#'+id).value=v??'';
-  const titles={edit:'Edit '+fullName(a),son:'Add a son',daughter:'Add a daughter',spouse:'Add a spouse',father:'Add father',mother:'Add mother'};
-  $('#edTitle').textContent=titles[act]; $('#fErr').textContent=''; $('#edDelete').hidden=act!=='edit'||a.id===data.meta.rootId;
-  $('#edSave').textContent=act==='edit'?'Save':'Add';
-  const rel={son:'Son of',daughter:'Daughter of',spouse:'Spouse of',father:'Father of',mother:'Mother of'}[act];
-  $('#edCtx').innerHTML=act==='edit'?`${esc(genLabel(a.generation))} · ${esc(a.id)}`:`${rel} <b>${esc(fullName(a))}</b>`;
+  if(suggest&&act==='edit'&&!a._new) return;    // visitors can only change their own suggestions
+  if(!suggest&&document.body.classList.contains('locked')){ toast('Click 🔓 Editing to make changes on this device.'); return; }
+  ed={act,anchorId,suggest:!!suggest}; const set=(id,v)=>$('#'+id).value=v??'';
+  const sib=act==='brother'||act==='sister';
+  const titles={edit:'Edit '+fullName(a),son:'Add a son',daughter:'Add a daughter',brother:'Add a brother',sister:'Add a sister',spouse:'Add a spouse',father:'Add father',mother:'Add mother'};
+  $('#editModal').classList.toggle('suggest',!!suggest);
+  $('#edTitle').textContent=suggest&&act!=='edit'?titles[act].replace('Add','Suggest'):titles[act]; $('#fErr').textContent='';
+  $('#edDelete').hidden=act!=='edit'||a.id===data.meta.rootId||(!!suggest&&!a._new);
+  $('#edDelete').textContent=a._new?'Remove suggestion':'Delete person';
+  $('#edSave').textContent=act==='edit'?'Save':suggest?'Add to suggestions':'Add';
+  $('#edCtx').innerHTML=act==='edit'?`${esc(genLabel(a.generation))} · ${esc(a.id)}`:`${REL[act]} <b>${esc(fullName(a))}</b>`;
   let relHTML='';
   if(act==='edit'){
     for(const k of FIELDS.slice(1,10)) set({firstName:'fFirst',lastName:'fLast',englishSurname:'fEnSur',englishFirstName:'fEnFirst',maidenName:'fMaiden',gender:'fGender',birthYear:'fBirth',deathYear:'fDeath',birthPlace:'fPlace'}[k],a[k]);
@@ -970,13 +1025,17 @@ function openEditor(act,anchorId){
   } else {
     ['fFirst','fEnFirst','fMaiden','fBirth','fDeath','fPlace','fNotes'].forEach(i=>set(i,''));
     const child=act==='son'||act==='daughter';
-    set('fGender',act==='son'||act==='father'?'M':act==='daughter'||act==='mother'?'F':(a.gender==='M'?'F':a.gender==='F'?'M':''));
+    set('fGender',act==='son'||act==='father'||act==='brother'?'M':act==='daughter'||act==='mother'||act==='sister'?'F':(a.gender==='M'?'F':a.gender==='F'?'M':''));
     set('fLast',child||act==='father'?(a.gender==='F'&&child?'':a.lastName):'');
     set('fEnSur',child||act==='father'?(a.gender==='F'&&child?'':a.englishSurname):'');
     if(child){ const opts=partnersOf(a.id), who=a.gender==='F'?'Father':'Mother';
       const pre=opts.length===1?opts[0].id:null;
       relHTML=choiceHTML('relPick',who,opts,pre,opts.length?(opts.length>1?'Pick which '+(who==='Mother'?'wife':'husband')+' is the '+who.toLowerCase()+'.':''):'No spouse recorded yet. Add one with “＋ Spouse” to link the '+who.toLowerCase()+'.');
       if(a.gender==='F'&&opts.length===1){ set('fLast',opts[0].lastName); set('fEnSur',opts[0].englishSurname); } }
+    if(sib){ const dad=a.fatherId&&idx.byId.get(a.fatherId), mum=a.motherId&&idx.byId.get(a.motherId);
+      set('fLast',dad?dad.lastName:''); set('fEnSur',dad?dad.englishSurname:'');
+      if(dad){ const opts=partnersOf(dad.id); if(mum&&!opts.includes(mum)) opts.push(mum);
+        relHTML=choiceHTML('relPick','Mother',opts,a.motherId||null,opts.length>1?'For a half-'+act+', pick the other wife.':''); } }
     if(act==='spouse') relHTML=`<div class="relbox"><div class="lbl">Marriage note (optional)</div><input id="relNote" placeholder="e.g. 繼室, 妾, second wife" style="width:100%"><div class="hint2">Shown on the marriage in the tree. Order matters: spouses are listed in the order you add them.</div></div>`;
   }
   $('#edRel').innerHTML=relHTML; showModal('editModal'); setTimeout(()=>$('#fFirst').focus(),30);
@@ -985,18 +1044,22 @@ function readForm(p){
   const v=id=>$('#'+id).value.trim();
   Object.assign(p,{firstName:v('fFirst'),lastName:v('fLast'),englishSurname:v('fEnSur')||null,englishFirstName:v('fEnFirst')||null,maidenName:v('fMaiden')||null,
     gender:$('#fGender').value||null,birthYear:numOrNull(v('fBirth')),deathYear:numOrNull(v('fDeath')),birthPlace:v('fPlace')||null,notes:$('#fNotes').value});
+  if(!p.firstName&&englishName(p)) p.useEnglishName=true;   // no Chinese given name: show the English name instead of "Unnamed" or a bare surname
 }
 $('#edSave').onclick=()=>{
   if(!ed) return; const a=idx.byId.get(ed.anchorId);
-  if(!$('#fFirst').value.trim()&&!$('#fLast').value.trim()){ $('#fErr').textContent='Enter at least a name.'; return; }
+  if(!['fFirst','fLast','fEnFirst','fEnSur'].some(i=>$('#'+i).value.trim())){ $('#fErr').textContent='Enter at least a name (Chinese or English).'; return; }
   for(const [id,lbl] of [['fBirth','Birth year'],['fDeath','Death year']]){ const x=$('#'+id).value; if(x!==''&&!Number.isInteger(+x)){ $('#fErr').textContent=lbl+' must be a whole number.'; return; } }
   const pick=(document.querySelector('input[name="relPick"]:checked')||{}).value||null;
   let focus=a.id;
   if(ed.act==='edit'){ readForm(a); if(document.querySelector('input[name="relPick"]')) a.motherId=pick; }
   else {
-    const p={id:nextId()}; for(const k of FIELDS) if(!(k in p)) p[k]=null; p.spouses=[]; readForm(p);
+    if(ed.suggest) startSuggestions();
+    const p={id:ed.suggest?nextTempId():nextId()}; for(const k of FIELDS) if(!(k in p)) p[k]=null; p.spouses=[]; readForm(p);
+    if(ed.suggest){ p._new=true; p._rel=REL[ed.act]+' '+fullName(a)+' ('+a.id+')'; }
     let at=data.people.indexOf(a)+1;
-    if(ed.act==='son'||ed.act==='daughter'){
+    if(ed.act==='brother'||ed.act==='sister'){ p.fatherId=a.fatherId||null; p.motherId=document.querySelector('input[name="relPick"]')?pick:(a.motherId||null); }
+    else if(ed.act==='son'||ed.act==='daughter'){
       if(a.gender==='F'){ p.motherId=a.id; p.fatherId=pick; } else { p.fatherId=a.id; p.motherId=pick; }
       data.people.forEach((q,i)=>{ if(q.fatherId===a.id||q.motherId===a.id) at=Math.max(at,i+1); });
     } else if(ed.act==='spouse'){ const note=$('#relNote').value.trim(); a.spouses.push(note?{id:p.id,notes:note}:{id:p.id}); }
@@ -1004,17 +1067,75 @@ $('#edSave').onclick=()=>{
     else if(ed.act==='mother'){ a.motherId=p.id; const f=a.fatherId&&idx.byId.get(a.fatherId); if(f&&!partnersOf(f.id).some(q=>q.id===p.id)) f.spouses.push({id:p.id}); at=data.people.indexOf(a); }
     data.people.splice(at,0,p); focus=p.id;
   }
-  hideModal('editModal'); rebuild(false); if(mode!=='full') setMode('full'); navigate(focus);
-  toast(ed.act==='edit'?'Saved '+fullName(a):'Added '+fullName(idx.byId.get(focus)));
+  hideModal('editModal'); rebuild(false); if(mode!=='full') setMode('full'); navigate(focus); updateSugBar();
+  toast(ed.act==='edit'?'Saved '+fullName(a):ed.suggest?'Added '+fullName(idx.byId.get(focus))+' to your suggestions. Send them when you are done.':'Added '+fullName(idx.byId.get(focus)));
 };
 $('#edDelete').onclick=()=>{
   if(!ed||ed.act!=='edit') return; const a=idx.byId.get(ed.anchorId);
+  if(ed.suggest&&!a._new) return;
   const kids=data.people.filter(q=>q.fatherId===a.id||q.motherId===a.id).length;
   if(!confirm('Delete '+fullName(a)+'?'+(kids?' Their '+kids+' child'+(kids>1?'ren':'')+' will stay in the tree without this parent.':''))) return;
   data.people=data.people.filter(q=>q!==a);
   for(const q of data.people){ for(const k of ['fatherId','motherId','adoptiveFatherId']) if(q[k]===a.id) q[k]=null; q.spouses=q.spouses.filter(s=>s.id!==a.id); }
-  hideModal('editModal'); selectedId=null; closePanel(); rebuild(false); toast('Deleted '+fullName(a));
+  hideModal('editModal'); selectedId=null; closePanel(); rebuild(false); updateSugBar(); toast((a._new?'Removed ':'Deleted ')+fullName(a));
 };
+
+/* ---------- suggestions ----------
+   Visitors in read-only mode can add relatives as suggestions. They show in the
+   tree (dashed cards) until sent. Sending posts them to the Lambda (action
+   "submit"), which saves them and emails the owner; nothing changes in the real
+   tree until the owner reviews and merges them (backend docs/submissions.md).
+   Suggested people get temporary ids NEW1, NEW2... */
+let sugBase=null;    // the people as they were before the first suggestion, to restore after send/discard
+const drafts=()=>data?data.people.filter(p=>p._new):[];
+function nextTempId(){ let n=0; for(const p of data.people){ const m=/^NEW(\d+)$/.exec(p.id); if(m) n=Math.max(n,+m[1]); } return 'NEW'+(n+1); }
+function startSuggestions(){ if(!sugBase) sugBase=JSON.stringify(data.people); }
+function endSuggestions(){
+  if(sugBase){ data.people=JSON.parse(sugBase); sugBase=null; selectedId=null; closePanel(); rebuild(false); }
+  updateSugBar();
+}
+function updateSugBar(){
+  const n=drafts().length; $('#sugBar').hidden=!n; if(!n) return;
+  $('#sugCount').textContent=tr('sugCount',n); $('#sugSend').textContent=tr('sugReview'); $('#sugDiscard').textContent=tr('sugDiscard');
+}
+/* The submission format the Lambda expects (lambda/submit.go). Links the visitor made
+   on existing people (a new spouse or parent shown on their card) are moved onto the
+   suggested person, so the real records are never sent back. */
+function buildSubmission(){
+  const base=new Map(JSON.parse(sugBase||'[]').map(p=>[p.id,p]));
+  const out=drafts().map(p=>({tempId:p.id,firstName:p.firstName||'',lastName:p.lastName||'',englishSurname:p.englishSurname||'',englishFirstName:p.englishFirstName||'',
+    maidenName:p.maidenName||'',gender:p.gender||'',birthYear:p.birthYear??null,deathYear:p.deathYear??null,birthPlace:p.birthPlace||'',notes:(p.notes||'').trim(),
+    fatherId:p.fatherId||'',motherId:p.motherId||'',spouses:(p.spouses||[]).map(s=>s.notes?{id:s.id,notes:s.notes}:{id:s.id}),fatherOf:[],motherOf:[],relation:p._rel||''}));
+  const byTemp=new Map(out.map(o=>[o.tempId,o]));
+  for(const q of data.people){ if(q._new) continue; const b=base.get(q.id); if(!b) continue;
+    if(byTemp.has(q.fatherId)&&!b.fatherId) byTemp.get(q.fatherId).fatherOf.push(q.id);
+    if(byTemp.has(q.motherId)&&!b.motherId) byTemp.get(q.motherId).motherOf.push(q.id);
+    for(const s of q.spouses||[]) if(byTemp.has(s.id)) byTemp.get(s.id).spouses.push(s.notes?{id:q.id,notes:s.notes}:{id:q.id}); }
+  return out;
+}
+$('#sugDiscard').onclick=()=>{ if(confirm(tr('sugDiscardQ'))) endSuggestions(); };
+$('#sugSend').onclick=()=>{
+  $('#sendTitle').textContent=tr('sendT'); $('#sendIntro').textContent=tr('sendP');
+  $('#sendList').innerHTML=drafts().map(p=>`<li><b>${esc(fullName(p))}</b>${esc(p._rel||'')}</li>`).join('');
+  for(const [id,k] of [['sNameL','sName'],['sEmailL','sEmail'],['sNoteL','sNote'],['sPwL','sPw'],['sCancel','cancel'],['sSend','send']]) $('#'+id).textContent=tr(k);
+  try{ $('#sName').value=$('#sName').value||localStorage.getItem('sug-name')||''; $('#sEmail').value=$('#sEmail').value||localStorage.getItem('sug-email')||''; }catch(_){}
+  $('#sPw').value=''; $('#sErr').textContent=''; showModal('sendModal'); setTimeout(()=>$($('#sName').value?'#sPw':'#sName').focus(),30);
+};
+let sending=false;
+$('#sendForm').addEventListener('submit',async e=>{
+  e.preventDefault(); if(sending) return;
+  const name=$('#sName').value.trim(), email=$('#sEmail').value.trim(), pw=$('#sPw').value;
+  if(!name||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)||!pw){ $('#sErr').textContent=tr('sNeed'); return; }
+  const people=buildSubmission(); if(!people.length){ hideModal('sendModal'); return; }
+  sending=true; $('#sSend').disabled=true; $('#sSend').textContent=tr('sending'); $('#sErr').textContent='';
+  try{
+    await callAuth(pw,'submit',{submission:{lang,submitter:{name,email},note:$('#sNote').value.trim(),people}});
+    try{ localStorage.setItem('sug-name',name); localStorage.setItem('sug-email',email); }catch(_){}
+    $('#sNote').value=''; hideModal('sendModal'); endSuggestions(); track('suggest_sent',{people:people.length}); toast(tr('sThanks'));
+  }catch(err){ $('#sErr').textContent=err.message||'Error'; $('#sPw').select(); }
+  finally{ sending=false; $('#sSend').disabled=false; $('#sSend').textContent=tr('send'); }
+});
+window.addEventListener('beforeunload',e=>{ if(drafts().length){ e.preventDefault(); e.returnValue=''; } });
 
 /* ---------- read-only lock (per-browser convenience, not a security boundary) ---------- */
 function applyLock(on){
@@ -1062,6 +1183,14 @@ const T={
   e401:'Incorrect password.',eServer:s=>'Server error ('+s+').',eNet:'Could not reach the server. Please try again.',
   e429:m=>m?'Too many attempts. Try again in about '+m+' minute'+(m===1?'':'s')+'.':'Too many attempts. Try again later.',
   eBook:'The book is not available yet.',
+  sugCount:n=>n+' suggested '+(n===1?'person':'people')+' not sent yet',sugReview:'Review & send',sugDiscard:'Discard',
+  sugDiscardQ:'Discard your suggestions? They have not been sent.',
+  sendT:'Send your suggestions',sendP:'These people will be sent for review. They are added to the family tree once checked.',
+  sName:'Your name',sEmail:'Your email (in case of questions)',sNote:'Note (optional): anything else, such as corrections',sPw:'Family password',
+  send:'Send',sending:'Sending…',sNeed:'Please fill in your name, a valid email and the password.',
+  sThanks:'Thank you! Your suggestions were sent for review.',
+  eSub429:m=>'You have sent a lot of suggestions. Try again in about '+(m||60)+' minutes.',
+  eSubOff:'Suggestions are not switched on yet.',eBad:m=>'Could not send'+(m?': '+m:'')+'.',
   contactP:'To request full access, or to suggest corrections and additions to the genealogy, please email:',
   noMail:'(contact email not set yet)',
   aboutH:'About this site',
@@ -1084,6 +1213,14 @@ const T={
   e401:'密碼錯誤。',eServer:s=>'伺服器錯誤（'+s+'）。',eNet:'無法連接伺服器，請稍後再試。',
   e429:m=>m?'嘗試次數過多，請約 '+m+' 分鐘後再試。':'嘗試次數過多，請稍後再試。',
   eBook:'族譜電子版暫未提供。',
+  sugCount:n=>'尚有 '+n+' 位提議的親屬未送出',sugReview:'檢查並送出',sugDiscard:'捨棄',
+  sugDiscardQ:'確定捨棄所有提議？這些資料尚未送出。',
+  sendT:'送出提議',sendP:'以下親屬資料將送交審核，核實後便會加入族譜。',
+  sName:'你的姓名',sEmail:'你的電郵（如有疑問會與你聯絡）',sNote:'備註（選填）：其他資料，例如更正',sPw:'族譜密碼',
+  send:'送出',sending:'送出中…',sNeed:'請填寫姓名、有效電郵及密碼。',
+  sThanks:'謝謝！你的提議已送出審核。',
+  eSub429:m=>'提議次數過多，請約 '+(m||60)+' 分鐘後再試。',
+  eSubOff:'提議功能尚未開放。',eBad:m=>'無法送出'+(m?'：'+m:'')+'。',
   contactP:'如欲申請完整存取權限，或對族譜有任何更正及補充，歡迎來信：',
   noMail:'（尚未設定聯絡電郵）',
   aboutH:'關於本網站',
@@ -1119,7 +1256,7 @@ function applyLang(){
   $('#aboutBody').innerHTML=aboutHTML();
   const ml=$('#mailLink');
   if(CONTACT_EMAIL){ ml.textContent=CONTACT_EMAIL; ml.href='mailto:'+CONTACT_EMAIL; } else { ml.textContent=tr('noMail'); ml.removeAttribute('href'); }
-  setPwTexts();
+  setPwTexts(); updateSugBar();
 }
 function setPwTexts(){
   $('#pwTitle').textContent=tr(pwMode==='book'?'bookTitle':'treeTitle');
@@ -1147,13 +1284,16 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!pwBack.hidden) cl
 $('#goTree').onclick=()=>{ if(dataLoaded){ trackView('tree'); home.hidden=true; window.dispatchEvent(new Event('resize')); } else openPw('tree'); };
 $('#goBook').onclick=()=>openPw('book');
 
-async function callAuth(password,action){
+async function callAuth(password,action,extra){
   if(!AUTH_URL) throw new Error(tr('eNet'));
   let res;
-  try{ res=await fetch(AUTH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,action})}); }
+  try{ res=await fetch(AUTH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password,action,...extra})}); }
   catch(_){ throw new Error(tr('eNet')); }
-  if(res.status===429){ const w=res.headers.get('Retry-After'); throw new Error(tr('e429',w?Math.ceil(w/60):null)); }
+  const msg=async()=>{ try{ return (await res.json()).error||''; }catch(_){ return ''; } };
+  if(res.status===429){ const w=res.headers.get('Retry-After'), m=w?Math.ceil(w/60):null; throw new Error(/submission/.test(await msg())?tr('eSub429',m):tr('e429',m)); }
   if(res.status===401) throw new Error(tr('e401'));
+  if(action==='submit'&&res.status===503) throw new Error(tr('eSubOff'));
+  if(action==='submit'&&res.status===400) throw new Error(tr('eBad',await msg()));
   if(res.status===404) throw new Error(tr('eBook'));
   if(!res.ok) throw new Error(tr('eServer',res.status));
   return res.json();
